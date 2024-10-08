@@ -1,0 +1,3 @@
+To deploy project right click in project  folder and select Run As > Maven Clean to drop any  last jar file in target folder.
+
+The next step is a click in project  folder and select Run As > Maven Build > Goal : Package 
