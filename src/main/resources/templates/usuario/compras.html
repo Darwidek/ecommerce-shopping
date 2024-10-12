@@ -33,7 +33,7 @@
 
 		<!-- Page Heading/Breadcrumbs -->
 		<h1 class="mt-4 mb-3">
-			EShop Web eCommerce <small>Tus compras</small>
+			EShop<small> Mis compras</small>
 		</h1>
 
 		<ol class="breadcrumb">
@@ -49,31 +49,31 @@
 						<table class="table">
 							<thead>
 								<tr>
-									<th scope="col">Nº de Orden</th>
+									<th scope="col">Referencia</th>
 									<th scope="col">Fecha</th>
 									<th scope="col">Valor</th>
-									<th scope="col">Acción</th>
+									<th scope="col"></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="orden:${ordenes}" th:if="${orden.esFavorita == 1}">
 									<td th:text="${orden.numero}"></td>
 									<td th:text="${orden.fechaCreacion}"></td>
-									<td th:text="${orden.total}">Total</td>
+									<td th:text="${orden.total}+' €'"></td>
 									<td><a th:href="@{/usuario/desfijar/{id} (id=${orden.id})}"
 											class="btn btn-success">Desfijar</a>
 									<td><a th:href="@{/usuario/detalle/{id} (id=${orden.id})}"
-											class="btn btn-success">Ver Detalle</a>
+											class="btn btn-success">Ver más</a>
 									</td>
 								</tr>
 								<tr th:each="orden:${ordenes}" th:if="${orden.esFavorita == 0}">
 									<td th:text="${orden.numero}"></td>
 									<td th:text="${orden.fechaCreacion}"></td>
-									<td th:text="${orden.total}">Total</td>
+									<td th:text="${orden.total}+' €'"></td>
 									<td><a th:href="@{/usuario/fijar/{id} (id=${orden.id})}"
-											class="btn btn-success">fijar</a>
+											class="btn btn-success">Fijar</a>
 									<td><a th:href="@{/usuario/detalle/{id} (id=${orden.id})}"
-											class="btn btn-success">Ver Detalle</a>
+											class="btn btn-success">Ver más</a>
 									</td>
 								</tr>
 

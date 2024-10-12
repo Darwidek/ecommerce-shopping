@@ -62,14 +62,17 @@ public class UsuarioController {
 	}
 
 	@PostMapping("/acceso") // if the name of post form is same Model object is not necessary
-	public String autenticador(Usuario usuario, HttpSession session) { // httpsession object persist for all spring
-																		// application
+	public String autenticador(Usuario usuario, HttpSession session, Model model) { // httpsession object persist for
+		// all spring
+		// application
 		logger.info("Accesos : {}", usuario);
 
 		Optional<Usuario> user = usuarioService.findByEmail(usuario.getEmail());
 		// logger.info("Usuario de db: {}", user.get());
 		if (user.isPresent()) { // verify if exist optional generated
 			session.setAttribute("idusuario", user.get().getId()); // ad user in a session object
+			String username = user.get().getNombre();
+			model.addAttribute("username", username);
 			logger.info("Usuario de db: {}", user.get());
 			if (user.get().getTipo().equals("ADMIN")) { // verify his type to redirect
 				return "redirect:/administrador"; // redirect admin view in case admin

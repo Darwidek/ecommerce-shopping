@@ -30,7 +30,7 @@
 
 		<!-- Page Heading/Breadcrumbs -->
 		<h1 class="mt-4 mb-3">
-			Spring eCommerce <small>Resumen de la orden</small>
+			EShop <small>Revisar pedido</small>
 		</h1>
 
 		<ol class="breadcrumb">
@@ -44,15 +44,18 @@
 				<div class="row">
 					<div class="col-lg-9">
 						<div class="card-body">
-							<h5 class="card-title">
-								DATOS ORDEN
+							<h5 class="card-title font-weight-bold">
+								REVISA TUS DATOS DE CONTACTO
 							</h5>
-							<h6 th:text=" 'Nombre: ' + ${usuario.nombre}">Nombre: </h6>
-							<h6 th:text=" 'Email: ' + ${usuario.email}">Correo: </h6>
-							<h6 th:text=" 'Direccion: ' + ${usuario.direccion}">Dirección</h6>
+							<h6 class="text-dark" th:text=" 'Nombre: ' + ${usuario.nombre}">Nombre: </h6>
+							<h6 class="text-dark" th:text=" 'Recibirás un email de confirmación a ' + ${usuario.email}">
+							</h6>
+							<h6 class="text-dark"
+								th:text=" 'La mensajería enviará tu paquete a la dirección ' + ${usuario.direccion}">
+							</h6>
 
-							<h5 class="card-title">
-								PRODUCTOS
+							<h5 class="card-title font-weight-bold mt-3">
+								HAS ENCARGADO LOS SIGUIENTE PRODUCTOS
 							</h5>
 							<div class="alert alert-light" role="alert">
 								<table class="table">
@@ -60,7 +63,7 @@
 										<tr>
 											<th scope="col">Producto</th>
 											<th scope="col">Precio</th>
-											<th scope="col">Cantidad</th>
+											<th scope="col">Unidades</th>
 											<th scope="col">Total</th>
 										</tr>
 									</thead>
@@ -68,9 +71,9 @@
 
 										<tr th:each="detalle:${detalles}">
 											<td th:text="${detalle.nombre}"></td>
-											<td th:text="${detalle.precio}"></td>
+											<td th:text="${detalle.precio} + ' €'"></td>
 											<td th:text="${detalle.cantidad}"></td>
-											<td th:text="${detalle.total}"></td>
+											<td th:text="${detalle.total} + ' €'"></td>
 										</tr>
 									</tbody>
 								</table>
@@ -86,21 +89,22 @@
 							<li class="list-group-item">
 								<h5 th:text=" 'Total: '+ ${orden.total}"></h5>
 							</li>
-							<a th:href="@{/guardarorden}" class="btn btn-dark">Generar</a>
+							<a th:href="@{/guardarorden}" class="btn btn-dark">Realizar pedido</a>
 						</ul>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- /.container -->
+	</div>
+	<!-- /.container -->
 
-		<!-- Footer with thymeleaf-->
-		<div th:include="usuario/template_usuario.html::footer">
-		</div>
+	<!-- Footer with thymeleaf-->
+	<div th:include="usuario/template_usuario.html::footer">
+	</div>
 
-		<!-- Bootstrap core JavaScript and thymeleaf-->
-		<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
-		<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<!-- Bootstrap core JavaScript and thymeleaf-->
+	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
 </body>
 

@@ -33,21 +33,25 @@
 	<div class="container">
 
 		<!-- Jumbotron Header -->
-		<header class="jumbotron my-4">
-			<h1 class="display-3">Web Ecommerce 2024</h1>
-			<p class="lead">Todo a tu alcance con un click</p>
+		<header class="jumbotron my-2 py-2 bg-success">
+			<h1 class="display-5 text-left font-weight-bold text-white">PROXIMAMENTE OFERTAS DE TEMPORADA</h1>
+			<p class="lead text-left font-weight-bold text-white">Promociones y descuentos exclusivos en tecnologia y
+				moda</p>
+			<p class="lead text-left font-weight-bold text-white">Garantía de envío 24 horas en compras superiores a 80
+				€ </p>
+
 		</header>
 
 		<!-- Page Features -->
 		<div class="row text-center">
 
 			<div class="col-lg-3 col-md-6 mb-4" th:each="producto: ${productos}">
-				<div class="card h-100">
+				<div class="card h-100 border-success">
 					<img class="card-img-top" th:src="@{/image/{img} (img=${producto.imagen})}" alt="">
 					<div class="card-body">
 						<p class="card-text" th:text="${producto.nombre}"></p>
 					</div>
-					<div class="card-footer">
+					<div class="card-footer bg-success">
 						<a th:href="@{/productohome/{id} (id=${producto.id})}" class="btn btn-success">Ver
 							producto</a>
 					</div>

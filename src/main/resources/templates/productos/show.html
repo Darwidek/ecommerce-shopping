@@ -8,7 +8,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>Spring eCommerce</title>
+	<title>EShop</title>
 
 
 	<!-- Bootstrap core CSS with thymeleaf-->
@@ -29,26 +29,26 @@
 
 
 		<!-- Page Heading/Breadcrumbs -->
-		<h1 class="mt-4 mb-3">
-			EShop eCommerce <small>Productos</small>
+		<h1 class="mt-3 mb-3">
+			EShop<small> Productos</small>
 		</h1>
 
 		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a href="index.html">Home</a></li>
+			<li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
 			<li class="breadcrumb-item active">Ver Productos</li>
 		</ol>
 
-		<a class="btn btn-primary" th:href="@{productos/create}"> Crear Producto</a>
+		<a class="btn btn-primary mb-2" th:href="@{productos/create}">Nuevo</a>
 		<h2>Productos</h2>
 		<table class="table">
 			<thead>
 				<tr>
-					<th scope="col">Nombre</th>
+					<th scope="col" class="texnt-">Nombre</th>
 					<th scope="col">Descripción</th>
-					<th scope="col">Inventario</th>
+					<th scope="col">Stock</th>
 					<th scope="col">Precio</th>
-					<th scope="col">Acción</th>
-					<th scope="col">Acción</th>
+					<th scope="col"></th>
+					<th scope="col"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -56,7 +56,7 @@
 					<td th:text="${producto.nombre}"></td>
 					<td th:text="${producto.descripcion}"></td>
 					<td th:text="${producto.cantidad}"></td>
-					<td th:text="${producto.precio}"></td>
+					<td th:text="${producto.precio} + '€'"></td>
 					<td></td>
 					<td><a class="btn btn-warning" th:href="@{productos/edit/{id} (id=${producto.id}) }">Editar</a>
 					</td>

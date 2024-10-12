@@ -27,22 +27,23 @@
 	<div class="container">
 
 		<!-- Jumbotron Header -->
-		<header class="jumbotron my-4">
-			<h1 class="display-3">Web Ecommerce 2024</h1>
-			<p class="lead">Todo a tu alcance con un click</p>
+		<header class="jumbotron my-4 bg-light">
+			<h1 class="display-5 text-left font-weight-bold">Eshop</h1>
+			<p class="lead text-dark">Perfil de administrador</p>
 		</header>
 
 		<!-- Page Features -->
 		<div class="row text-center">
 
 			<div class="col-lg-3 col-md-6 mb-4" th:each="producto: ${productos}">
-				<div class="card h-100">
+				<div class="card h-100 border-success">
 					<img class="card-img-top" th:src="@{/image/{img} (img=${producto.imagen})}" alt="">
 					<div class="card-body">
 						<p class="card-text" th:text="${producto.nombre}"></p>
 					</div>
-					<div class="card-footer">
-						<a th:href="@{productohome/{id}}" class="btn btn-success">Ver producto</a>
+					<div class="card-footer bg-success">
+						<a th:href="@{/productohome/{id} (id=${producto.id})}" class="btn btn-success">Ver
+							producto</a>
 					</div>
 				</div>
 			</div>
