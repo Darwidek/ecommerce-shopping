@@ -10,8 +10,8 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "productos")
 public class Producto {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id // Id is primary key
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // generating auto ID
 	private Integer id;
 	private String nombre;
 	private String descripcion;
@@ -20,15 +20,16 @@ public class Producto {
 	private int cantidad;
 	
 	@ManyToOne
-	private Usuario usuario;
+	private Usuario usuario; // wich user can be own of one or many products
 
-	public Producto() {
+
+	public Producto() { // empty constructor required by Hibernate JPA
 		// TODO Auto-generated constructor stub
 	}
 
 	public Producto(Integer id, String nombre, String descripcion, String imagen, double precio, int cantidad,
 			Usuario usuario) {
-		super();
+		// super();
 		this.id = id;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
@@ -98,6 +99,6 @@ public class Producto {
 	public String toString() {
 		return "Producto [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", imagen=" + imagen
 				+ ", precio=" + precio + ", cantidad=" + cantidad + "]";
-	}
+	} // method heredated of Object class{} to write a read attribute values on string
 
 }

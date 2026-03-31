@@ -29,7 +29,7 @@ import com.spring.ecommerce.service.ProductoService;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/") // url: http://localhost:8080/
 public class HomeController {
 
 	private final Logger log = LoggerFactory.getLogger(HomeController.class);
@@ -50,22 +50,28 @@ public class HomeController {
 
 	Orden orden = new Orden(); // to save order an data about it
 
-	@GetMapping("/") /// to show default view
+	@GetMapping("/") /// to show default view http://localhost:8080/
 	public String home(Model model, HttpSession session) {
 		log.info("Sesion del usuario: {}", session.getAttribute("idusuario"));
 		model.addAttribute("productos", productoService.findAll());
-		model.addAttribute("sesion", session.getAttribute("idusuario")); // show user in navbar using session since
+		model.addAttribute("sesion", session.getAttribute("idusuario"));
+		model.addAttribute("username", session.getAttribute("username"));
+		// show user in navbar using session since
 																			// model object
 		return "usuario/home";
 	}
 
 	@GetMapping("productohome/{id}")
-	public String productoHome(@PathVariable Integer id, Model model) {
+	public String productoHome(@PathVariable Integer id, Model model, HttpSession session) {
 		log.info("Id producto enviado como parametro {}", id);
+		log.info("Id producto enviado como parametro {}", session.getAttribute("username"));
 		Producto producto = new Producto();
 		Optional<Producto> productoOpcional = productoService.get(id);
 		producto = productoOpcional.get();
 		model.addAttribute("producto", producto);
+
+		// Agregar username desde la sesión
+		model.addAttribute("username", session.getAttribute("username"));
 		return "usuario/productohome";
 	}
 

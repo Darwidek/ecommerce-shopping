@@ -7,7 +7,6 @@ import org.apache.coyote.http11.Http11InputBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +36,6 @@ public class UsuarioController {
 	private IOrdenService ordenService;
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	@GetMapping("/registro")
 	public String create() {
@@ -47,9 +45,7 @@ public class UsuarioController {
 	@PostMapping("/save")
 	public String save(Usuario usuario) { // if the name of post form is same Model object is not necessary
 		logger.info("Usuario registro: {}", usuario);
-		String passwordCodificada = passwordEncoder.encode(usuario.getPassword());
 		usuario.setTipo("USER");
-		usuario.setPassword(passwordCodificada);
 		logger.info("Usuario registro: {}", usuario);
 		usuarioService.save(usuario);
 
@@ -70,7 +66,9 @@ public class UsuarioController {
 		Optional<Usuario> user = usuarioService.findByEmail(usuario.getEmail());
 		// logger.info("Usuario de db: {}", user.get());
 		if (user.isPresent()) { // verify if exist optional generated
-			session.setAttribute("idusuario", user.get().getId()); // ad user in a session object
+			session.setAttribute("idusuario", user.get().getId());
+			session.setAttribute("username", user.get().getUsername());
+			// ad user in a session object
 			String username = user.get().getNombre();
 			model.addAttribute("username", username);
 			logger.info("Usuario de db: {}", user.get());
@@ -94,6 +92,7 @@ public class UsuarioController {
 
 		List<Orden> ordenes = ordenService.findByUsuario(usuario); // filter orders in list by user
 		model.addAttribute("ordenes", ordenes); // get list of orders filtered in model to show in view
+		logger.info("El usuario es este, " + session);
 
 		return "usuario/compras";
 	}

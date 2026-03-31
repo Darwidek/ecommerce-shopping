@@ -5,8 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import com.spring.ecommerce.model.Producto;
 
+import java.util.List;
+
 @Repository
 public interface IProductoRepository extends JpaRepository<Producto, Integer> { // defines repository, table object an ID
-																				// type to SQL
+
+    List<Producto> findByNombreContainingIgnoreCase(String nombre);
 
 }

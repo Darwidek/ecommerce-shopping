@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <head>
 
@@ -68,7 +68,7 @@
 					<ul class="navbar-nav ml-auto">
 						<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#"
 								id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true"
-								aria-expanded="false">Usuario</a>
+								aria-expanded="false"> <span th:text="${session.username != null ? session.username : 'Invitado'}"></span></a>
 
 							<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 								<a class="dropdown-item" th:href="@{/usuario/compras}">Compras</a>

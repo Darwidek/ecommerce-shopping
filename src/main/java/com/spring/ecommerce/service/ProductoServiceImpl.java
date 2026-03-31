@@ -10,7 +10,7 @@ import com.spring.ecommerce.model.Producto;
 import com.spring.ecommerce.repository.IProductoRepository;
 
 @Service
-public class ProductoServiceImpl implements ProductoService {
+public  class ProductoServiceImpl implements ProductoService {
 
 	@Autowired
 	private IProductoRepository productoRepository;
@@ -35,9 +35,17 @@ public class ProductoServiceImpl implements ProductoService {
 	public void delete(Integer id) {
 		productoRepository.deleteById(id);
 	}
-	
+
+	@Override
 	 public List<Producto> findAll(){
 		return productoRepository.findAll();
 	}
 
+	@Override
+	public List<Producto> findByNombre(String nombre) {
+		return productoRepository.findByNombreContainingIgnoreCase(nombre);
+	}
+
 }
+
+// you must to implements all interface methods if not you need abstract class

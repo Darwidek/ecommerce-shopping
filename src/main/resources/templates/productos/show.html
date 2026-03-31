@@ -12,17 +12,17 @@
 
 
 	<!-- Bootstrap core CSS with thymeleaf-->
-	<link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+	<link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
 	<!-- Custom styles for this template with thymeleaf-->
-	<link th:href="@{css/heroic-features.css}" rel="stylesheet">
+	<link th:href="@{/css/heroic-features.css}" rel="stylesheet">
 
 </head>
 
 <body>
 
 	<!-- Navigation with thymeleaf template-->
-	<div th:include="administrador/template_admin.html::header"></div>
+	<div th:include="/administrador/template_admin.html::header"></div>
 
 	<!-- Page Content -->
 	<div class="container">
@@ -38,7 +38,7 @@
 			<li class="breadcrumb-item active">Ver Productos</li>
 		</ol>
 
-		<a class="btn btn-primary mb-2" th:href="@{productos/create}">Nuevo</a>
+		<a class="btn btn-primary mb-2" th:href="@{/productos/create}">Nuevo</a>
 		<h2>Productos</h2>
 		<table class="table">
 			<thead>
@@ -58,9 +58,9 @@
 					<td th:text="${producto.cantidad}"></td>
 					<td th:text="${producto.precio} + '€'"></td>
 					<td></td>
-					<td><a class="btn btn-warning" th:href="@{productos/edit/{id} (id=${producto.id}) }">Editar</a>
+					<td><a class="btn btn-warning" th:href="@{/productos/edit/{id} (id=${producto.id}) }">Editar</a>
 					</td>
-					<td><a class="btn btn-danger" th:href="@{productos/delete/{id} (id=${producto.id}) }">Eliminar</a>
+					<td><a class="btn btn-danger" th:href="@{/productos/delete/{id} (id=${producto.id}) }">Eliminar</a>
 					</td>
 				</tr>
 			</tbody>
@@ -70,11 +70,11 @@
 	<!-- /.container -->
 
 	<!-- Footer with thymeleaf template-->
-	<div th:include="administrador/template_admin.html::footer"></div>
+	<div th:include="/administrador/template_admin.html::footer"></div>
 
 	<!-- Bootstrap core JavaScript with thymeleaf-->
-	<script th:src="@{vendor/jquery/jquery.min.js}"></script>
-	<script th:src="@{vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
 </body>
 

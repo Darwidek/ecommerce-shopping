@@ -69,3 +69,5 @@ public class OrdenServiceImpl implements IOrdenService {
 	}
 
 }
+
+// you must to implements all interface methods if not you need abstract class

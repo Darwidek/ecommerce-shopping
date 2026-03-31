@@ -12,8 +12,8 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id // Id is primary key
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // generating auto ID
 	private Integer id;
 	private String nombre;
 	private String username;
@@ -24,17 +24,17 @@ public class Usuario {
 	private String password;
 
 	@OneToMany(mappedBy = "usuario")
-	private List<Producto> productos;
+	private List<Producto> productos; // one user to many products (foreign key user in products table)
 
 	@OneToMany(mappedBy = "usuario")
-	private List<Orden> ordenes;
+	private List<Orden> ordenes; // one user to many orders (foreign key user in orders table)
 
 	public Usuario() {
-	}
+	} // empty constructor required by Hibernate JPA
 
 	public Usuario(Integer id, String nombre, String username, String email, String direccion, String telefono,
 			String tipo, String password) {
-		super();
+		// super();
 		this.id = id;
 		this.nombre = nombre;
 		this.username = username;
@@ -122,6 +122,6 @@ public class Usuario {
 		return "Usuario [id=" + id + ", nombre=" + nombre + ", username=" + username + ", email=" + email
 				+ ", direccion=" + direccion + ", telefono=" + telefono + ", tipo=" + tipo + ", password=" + password
 				+ "]";
-	}
+	} // method heredated of Object class{} to write a read attribute values on string
 
 }

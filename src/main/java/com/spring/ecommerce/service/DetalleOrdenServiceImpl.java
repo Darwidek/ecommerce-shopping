@@ -18,3 +18,5 @@ public class DetalleOrdenServiceImpl implements IDetalleOrdenService {
 	}
 
 }
+
+// you must to implements all interface methods if not you need abstract class

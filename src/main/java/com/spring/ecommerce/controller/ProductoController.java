@@ -117,4 +117,16 @@ public class ProductoController {
 
 	}
 
+	@GetMapping("/search")
+	public String search(@RequestParam("nombre") String nombre, Model model) {
+		LOGGER.info("Buscando productos con nombre: {}", nombre);
+
+		List<Producto> productos = productoService.findByNombre(nombre);
+
+		model.addAttribute("productos", productos);
+		model.addAttribute("nombre", nombre); // opcional, para mantener lo buscado en la vista
+
+		return "productos/show";
+	}
+
 }

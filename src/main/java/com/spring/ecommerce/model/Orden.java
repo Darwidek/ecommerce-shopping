@@ -15,14 +15,14 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "ordenes")
 public class Orden {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id // Id is primary key
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // generating auto ID
 	private Integer id;
 	private String numero;
 	private Date fechaCreacion;
 	private Date fechaRecepcion;
 	private Double total;
-	@Column(columnDefinition = "TINYINT DEFAULT 0")
+	@Column(columnDefinition = "TINYINT DEFAULT 0") // default value = 0
 	private byte esFavorita;
 
 	public byte getEsFavorita() {
@@ -34,16 +34,16 @@ public class Orden {
 	}
 
 	@ManyToOne
-	private Usuario usuario;
+	private Usuario usuario; // one order to many users
 
 	@OneToMany(mappedBy = "orden")
-	private List<DetalleOrden> detalle;
+	private List<DetalleOrden> detalle; // list , because there is an order registered with many details
 
-	public Orden() {
+	public Orden() { // empty constructor required by Hibernate JPA
 	}
 
 	public Orden(Integer id, String numero, Date fechaCreacion, Date fechaRecepcion, Double total) {
-		super();
+		// super();
 		this.id = id;
 		this.numero = numero;
 		this.fechaCreacion = fechaCreacion;
@@ -111,6 +111,6 @@ public class Orden {
 	public String toString() {
 		return "Orden [id=" + id + ", numero=" + numero + ", fechaCreacion=" + fechaCreacion + ", fechaRecepcion="
 				+ fechaRecepcion + ", total=" + total + "]";
-	}
+	} // method heredated of Object class{} to write a read attribute values on string
 
 }

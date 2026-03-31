@@ -27,7 +27,7 @@ public class AdministradorController {
 	private IUsuarioService usuarioService;
 
 	@GetMapping("")
-	public String home(Model model) { // it sets mainUrl/administrador/view home
+	public String home(Model model) { // it sets main Url/administrador/view home
 
 		List<Producto> productos = productoService.findAll();
 		model.addAttribute("productos", productos);

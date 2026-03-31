@@ -10,8 +10,8 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "detalles")
 public class DetalleOrden {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id // Id is primary key
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // generating auto ID
 	private Integer id;
 	private String nombre;
 	private double cantidad;
@@ -19,17 +19,17 @@ public class DetalleOrden {
 	private double total;
 
 	@ManyToOne
-	private Orden orden; // in orden can have a list detalle objects
+	private Orden orden; // there are many details to one order
 
 	@ManyToOne
-	private Producto producto; //
+	private Producto producto; // there is a detail to many products
 
-	public DetalleOrden() {
+	public DetalleOrden() { // empty constructor required by Hibernate JPA
 		// TODO Auto-generated constructor stub
 	}
 
 	public DetalleOrden(Integer id, String nombre, double cantidad, double precio, double total) {
-		super();
+		// super();
 		this.id = id;
 		this.nombre = nombre;
 		this.cantidad = cantidad;
@@ -97,6 +97,6 @@ public class DetalleOrden {
 	public String toString() {
 		return "DetalleOrden [id=" + id + ", nombre=" + nombre + ", cantidad=" + cantidad + ", precio=" + precio
 				+ ", total=" + total + "]";
-	}
+	} // method heredated of Object class{} to write a read attribute values on string
 
 }

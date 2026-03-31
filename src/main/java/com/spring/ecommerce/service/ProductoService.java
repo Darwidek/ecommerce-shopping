@@ -16,4 +16,7 @@ public interface ProductoService { // create crud methods with a repository obje
 	
 	public List<Producto> findAll();
 
+	List<Producto> findByNombre(String nombre);
+
+
 }

@@ -7,5 +7,5 @@ import com.spring.ecommerce.model.Orden;
 
 public interface IDetalleOrdenRepository extends JpaRepository<DetalleOrden, Integer>{
 
-	
+	// 1st JPA interface to acces bbdd (SQL queries)
 }
