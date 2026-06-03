@@ -2,12 +2,7 @@ package com.spring.ecommerce.model;
 
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "usuarios")
@@ -16,7 +11,9 @@ public class Usuario {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // generating auto ID
 	private Integer id;
 	private String nombre;
+    @Column(unique = true)
 	private String username;
+    @Column(unique = true)
 	private String email;
 	private String direccion;
 	private String telefono;
@@ -41,7 +38,7 @@ public class Usuario {
 		this.email = email;
 		this.direccion = direccion;
 		this.telefono = telefono;
-		this.tipo = tipo;
+		this.tipo = tipo; // "USER" o "ADMIN"
 		this.password = password;
 	}
 

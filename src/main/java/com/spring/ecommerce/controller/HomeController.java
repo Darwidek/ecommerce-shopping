@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.spring.ecommerce.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +28,12 @@ import com.spring.ecommerce.service.IOrdenService;
 import com.spring.ecommerce.service.IUsuarioService;
 import com.spring.ecommerce.service.ProductoService;
 
-import jakarta.servlet.http.HttpSession;
-
+ /**
+  * Main controller for the public shop.
+  *
+  * Handles product browsing, shopping cart, order creation
+  * and checkout process.
+  */
 @Controller
 @RequestMapping("/") // url: http://localhost:8080/
 public class HomeController {
@@ -46,35 +52,39 @@ public class HomeController {
 	@Autowired
 	private IDetalleOrdenService detalleOrdenService;
 
-	List<DetalleOrden> detalles = new ArrayList<DetalleOrden>(); // to store details order
+	 // Temporary in-memory cart (session-like behavior)
+	List<DetalleOrden> detalles = new ArrayList<DetalleOrden>();
 
 	Orden orden = new Orden(); // to save order an data about it
 
+	 /**
+	  * Home page with product listing.
+	  */
 	@GetMapping("/") /// to show default view http://localhost:8080/
-	public String home(Model model, HttpSession session) {
-		log.info("Sesion del usuario: {}", session.getAttribute("idusuario"));
-		model.addAttribute("productos", productoService.findAll());
-		model.addAttribute("sesion", session.getAttribute("idusuario"));
-		model.addAttribute("username", session.getAttribute("username"));
-		// show user in navbar using session since
-																			// model object
+	public String home(Model model) {
+		List<Producto> productos = productoService.findAll();
+		model.addAttribute("productos", productos);
+		// model.addAttribute("username", user.getNickname());
+
 		return "usuario/home";
 	}
 
+	 /**
+	  * Product detail page.
+	  */
 	@GetMapping("productohome/{id}")
-	public String productoHome(@PathVariable Integer id, Model model, HttpSession session) {
+	public String productoHome(@PathVariable Integer id, Model model) {
 		log.info("Id producto enviado como parametro {}", id);
-		log.info("Id producto enviado como parametro {}", session.getAttribute("username"));
 		Producto producto = new Producto();
 		Optional<Producto> productoOpcional = productoService.get(id);
 		producto = productoOpcional.get();
 		model.addAttribute("producto", producto);
-
-		// Agregar username desde la sesión
-		model.addAttribute("username", session.getAttribute("username"));
 		return "usuario/productohome";
 	}
 
+	 /**
+	  * Adds a product to the shopping cart.
+	  */
 	@PostMapping("/cesta")
 	public String añadirCarito(@RequestParam Integer id, @RequestParam Integer cantidad, Model model) { // @requestparam
 																										// refrences to
@@ -116,13 +126,15 @@ public class HomeController {
 		return "/usuario/cesta";
 	}
 
+	 /**
+	  * Removes a product from the shopping cart.
+	  */
 	@GetMapping("delete/cesta/{id}")
-	public String borrarProductoCesta(@PathVariable Integer id, Model model) { // delete 1 producto of cart, get the
-																				// post params (Id only)
-		List<DetalleOrden> ordenesNueva = new ArrayList<DetalleOrden>(); // new details sheet list after delete
+	public String borrarProductoCesta(@PathVariable Integer id, Model model) {
+		List<DetalleOrden> ordenesNueva = new ArrayList<DetalleOrden>();
 
-		for (DetalleOrden detalleOrden : detalles) { // if each producto is not Post id add his detail in new list
-			if (detalleOrden.getProducto().getId() != id) { // of course id 3 will not add it.
+		for (DetalleOrden detalleOrden : detalles) {
+			if (detalleOrden.getProducto().getId() != id) {
 				ordenesNueva.add(detalleOrden);
 			}
 		}
@@ -138,20 +150,24 @@ public class HomeController {
 		return "usuario/cesta";
 	}
 
+	 /**
+	  * Displays current cart.
+	  */
 	@GetMapping("/getCesta") // show data about order and details before confirm shop
-	public String getCesta(Model model, HttpSession session) { // get the order and details if it must to return cart
+	public String getCesta(Model model) { // get the order and details if it must to return cart
 
 		model.addAttribute("shopdetails", detalles);
 		model.addAttribute("orden", orden); // get detail an order generated in cesta
-		model.addAttribute("sesion", session.getAttribute("idusuario")); // show user in navbar using session since
-																			// model object
 		return "/usuario/cesta";
 	}
 
+	 /**
+	  * Order summary before checkout.
+	  */
 	@GetMapping("/verorden")
-	public String verOrden(Model model, HttpSession session) {
+	public String verOrden(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
+		Usuario usuario = userDetails.getUsuario(); //usuario de prueba temporal
 
 		model.addAttribute("detalles", detalles);
 		model.addAttribute("orden", orden); // get detail an order generated in cesta
@@ -159,14 +175,17 @@ public class HomeController {
 		return "usuario/resumenorden";
 	}
 
+	 /**
+	  * Finalizes and saves the order.
+	  */
 	@GetMapping("/guardarorden")
-	public String guardarOrden(HttpSession session) { // not use model because will not o show in view but contains
+	public String guardarOrden(@AuthenticationPrincipal CustomUserDetails userDetails) { // not use model because will not o show in view but contains
 														// values of
 		// veOrden() method
 		Date fechaCreacion = new Date(); // set date
 		orden.setFechaCreacion(fechaCreacion);
 		orden.setNumero(ordenService.darCodigoOrden()); // set code
-		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get(); // set
+		Usuario usuario = userDetails.getUsuario(); // set
 																															// Usuario
 		orden.setUsuario(usuario);
 		log.info("Ordenes guardada: {}", orden);
@@ -180,7 +199,9 @@ public class HomeController {
 		detalles.clear();
 		return "redirect:/"; // redirect to home
 	}
-
+	 /**
+	  * Product search by name.
+	  */
 	@PostMapping("/busqueda")
 	public String buscarProducto(@RequestParam String nombre, Model model) {
 		log.info("Nombre del producto:{}", nombre);

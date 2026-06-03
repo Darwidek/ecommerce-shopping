@@ -1,12 +1,19 @@
 package com.spring.ecommerce.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
+import com.spring.ecommerce.model.Producto;
+import com.spring.ecommerce.security.CustomUserDetails;
+import com.spring.ecommerce.service.ProductoService;
 import org.apache.coyote.http11.Http11InputBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,22 +27,27 @@ import com.spring.ecommerce.repository.IUsuarioRepository;
 import com.spring.ecommerce.service.IOrdenService;
 import com.spring.ecommerce.service.IUsuarioService;
 
-import jakarta.servlet.http.HttpSession;
+// import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/usuario")
 public class UsuarioController {
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	private final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
 	@Autowired
 	private IUsuarioService usuarioService;
 
 	@Autowired
-	private IOrdenService ordenService;
+	private ProductoService productoService;
 
 	@Autowired
+	private IOrdenService ordenService;
+
+
 
 	@GetMapping("/registro")
 	public String create() {
@@ -44,9 +56,9 @@ public class UsuarioController {
 
 	@PostMapping("/save")
 	public String save(Usuario usuario) { // if the name of post form is same Model object is not necessary
-		logger.info("Usuario registro: {}", usuario);
 		usuario.setTipo("USER");
-		logger.info("Usuario registro: {}", usuario);
+		String passwordEncriptada = passwordEncoder.encode(usuario.getPassword());
+		usuario.setPassword(passwordEncriptada); // encripting password
 		usuarioService.save(usuario);
 
 		return "redirect:/";
@@ -54,72 +66,47 @@ public class UsuarioController {
 
 	@GetMapping("/login")
 	public String login() {
+
+		logger.info("TIPO DE USUARIO:");
 		return "usuario/login";
 	}
 
-	@PostMapping("/acceso") // if the name of post form is same Model object is not necessary
-	public String autenticador(Usuario usuario, HttpSession session, Model model) { // httpsession object persist for
-		// all spring
-		// application
-		logger.info("Accesos : {}", usuario);
-
-		Optional<Usuario> user = usuarioService.findByEmail(usuario.getEmail());
-		// logger.info("Usuario de db: {}", user.get());
-		if (user.isPresent()) { // verify if exist optional generated
-			session.setAttribute("idusuario", user.get().getId());
-			session.setAttribute("username", user.get().getUsername());
-			// ad user in a session object
-			String username = user.get().getNombre();
-			model.addAttribute("username", username);
-			logger.info("Usuario de db: {}", user.get());
-			if (user.get().getTipo().equals("ADMIN")) { // verify his type to redirect
-				return "redirect:/administrador"; // redirect admin view in case admin
-			} else {
-				return "redirect:/"; // redirect default view in case user
-			}
-		} else {
-			logger.info("El usuario no existe en el acceso");
-		}
-
-		return "redirect:/";
-	}
-
 	@GetMapping("/compras")
-	public String usuarioCompras(Model model, HttpSession session) {
-		model.addAttribute("sesion", session.getAttribute("idusuario")); // grab id user in model to navbar
-		// find by id user in session
-		Usuario usuario = usuarioService.findById(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
+	public String usuarioCompras(Model model,@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+		Usuario usuario = userDetails.getUsuario();
 
 		List<Orden> ordenes = ordenService.findByUsuario(usuario); // filter orders in list by user
-		model.addAttribute("ordenes", ordenes); // get list of orders filtered in model to show in view
-		logger.info("El usuario es este, " + session);
+		model.addAttribute("ordenes", ordenes); // get list of orders filtered in model to show in vie
 
 		return "usuario/compras";
 	}
 
+
 	@GetMapping("/detalle/{id}")
-	public String detalleCompra(@PathVariable Integer id, HttpSession sesssion, Model model) {
-		logger.info("Id de la orden: {}", id);
+	public String detalleCompra(@PathVariable Integer id, Model model) {
 		Optional<Orden> orden = ordenService.findById(id); // find order by id
 		model.addAttribute("detalles", orden.get().getDetalle()); // get details of order and trnsfar by model
-
-		model.addAttribute("sesion", sesssion.getAttribute("idusuario")); // transfer by model object id user
 		return "usuario/detallecompra";
 	}
 
+	@GetMapping("/logout")
+	public String cerrarSesion() {
+		return "redirect:/";
+	}
+	/*
 	@GetMapping("/logout")
 	public String cerrarSesion(HttpSession session) {
 		session.removeAttribute("idusuario");
 		return "redirect:/";
 	}
+	* */
 
 	@GetMapping("/fijar/{id}")
 	public String fijarFavorita(@PathVariable Integer id) {
 		Orden orden = ordenService.findById(id).get(); // find order by id
-		logger.info("Encuentra la orden: {}" + orden); // verifies it
 		byte numFijado = 1;
 		orden.setEsFavorita(numFijado);
-		logger.info("Verificando dato fijado: " + orden.getEsFavorita());
 		ordenService.save(orden);
 		return "redirect:/usuario/compras";
 	}
@@ -127,12 +114,15 @@ public class UsuarioController {
 	@GetMapping("/desfijar/{id}")
 	public String desfijarFavorita(@PathVariable Integer id) {
 		Orden orden = ordenService.findById(id).get(); // find order by id
-		logger.info("Encuentra la orden: {}" + orden); // verifies it
 		byte numFijado = 0;
 		orden.setEsFavorita(numFijado);
-		logger.info("Verificando dato fijado: " + orden.getEsFavorita());
 		ordenService.save(orden);
 		return "redirect:/usuario/compras";
+	}
+
+	@GetMapping("/denegado")
+	public String accesoDenegado() {
+		return "denegado";
 	}
 
 }

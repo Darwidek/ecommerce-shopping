@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 
@@ -12,24 +12,21 @@
 
 
 	<!-- Bootstrap core CSS with thymeleaf-->
-	<link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+	<link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
 	<!-- Custom styles for this template with thymeleaf-->
-	<link th:href="@{css/heroic-features.css}" rel="stylesheet">
+	<link th:href="@{/css/heroic-features.css}" rel="stylesheet">
 
 </head>
 
 <body>
 
-	<!-- Navigation with thymeleaf-->
-	<div th:include="usuario/template_usuario.html::header" th:if="${sesion==null}">
-	</div>
+<!-- Navigation with thymeleaf if user is logged -->
+<div th:include="/usuario/template_usuario.html::header-user">
+</div>
 
-	<!-- Navigation with thymeleaf if user is logged -->
-	<div th:include="usuario/template_usuario.html::header-user" th:unless="${sesion==null}">
-	</div>
 
-	<!-- Page Content -->
+<!-- Page Content -->
 	<div class="container">
 
 		<!-- Jumbotron Header -->

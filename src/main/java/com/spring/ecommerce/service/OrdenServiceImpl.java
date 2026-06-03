@@ -11,63 +11,73 @@ import com.spring.ecommerce.model.Orden;
 import com.spring.ecommerce.model.Usuario;
 import com.spring.ecommerce.repository.IOrdenRepository;
 
+/**
+ * Service implementation for order management.
+ * Contains business logic for order creation, retrieval and user filtering.
+ */
 @Service
 public class OrdenServiceImpl implements IOrdenService {
 
 	@Autowired
 	private IOrdenRepository ordenRepository;
 
+	/**
+	 * Saves an order in the database.
+	 */
 	@Override
 	public Orden save(Orden orden) {
 		return ordenRepository.save(orden);
 	}
 
+	/**
+	 * Returns all orders in the system.
+	 */
 	@Override
 	public List<Orden> findAll() {
 		return ordenRepository.findAll();
 	}
 
+	/**
+	 * Generates a sequential order code with zero padding.
+	 * Format example: 0000000001, 0000000002, ...
+	 */
 	@Override
-	public String darCodigoOrden() { // to generate order code starting by 0000010
+	public String darCodigoOrden() {
 
 		int numero = 0;
-		String numeroConcatenado = "";
 
-		List<Orden> ordenes = findAll(); // get list order
-		List<Integer> numeros = new ArrayList<Integer>(); // get integer list to add number orders
+		List<Orden> ordenes = findAll();
+		List<Integer> numeros = new ArrayList<>();
 
-		ordenes.stream().forEach(o -> numeros.add(Integer.parseInt(o.getNumero()))); // for each order generates order
-																						// number to int list
-		if (ordenes.isEmpty()) { // if no order first code is 1
+		ordenes.stream()
+				.map(Orden::getNumero)
+				.filter(n -> n != null && !n.isBlank())
+				.forEach(n -> numeros.add(Integer.parseInt(n)));
+
+		if (ordenes.isEmpty() || numeros.isEmpty()) {
 			numero = 1;
 		} else {
-			numero = numeros.stream().max(Integer::compare).get(); // get the max number of int list
-			numero++; // and increment it to create next order and get the last order code
+			numero = numeros.stream().max(Integer::compareTo).orElse(0);
+			numero++;
 		}
 
-		if (numero < 10) { // 00000000010
-			numeroConcatenado = "0000000000" + String.valueOf(numero); // concate number list with 0 to build the code
-		} else if (numero < 100) { // 000000000100
-			numeroConcatenado = "000000000" + String.valueOf(numero);
-		} else if (numero < 1000) { // 000000001000
-			numeroConcatenado = "00000000" + String.valueOf(numero);
-		} else if (numero < 10000) { // 000000010000
-			numeroConcatenado = "0000000" + String.valueOf(numero);
-		}
-		return numeroConcatenado; // return code
+		return String.format("%010d", numero);
 	}
 
+	/**
+	 * Retrieves all orders for a given user.
+	 */
 	@Override
 	public List<Orden> findByUsuario(Usuario usuario) {
-
 		return ordenRepository.findByUsuario(usuario);
 	}
 
+	/**
+	 * Finds an order by its ID.
+	 */
 	@Override
 	public Optional<Orden> findById(Integer id) {
 		return ordenRepository.findById(id);
 	}
-
 }
 
-// you must to implements all interface methods if not you need abstract class

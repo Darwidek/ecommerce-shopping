@@ -1,110 +1,110 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="">
-	<meta name="author" content="">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-	<title>EShop</title>
+    <title>EShop</title>
 
 
-	<!-- Bootstrap core CSS with thymeleaf-->
-	<link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Bootstrap core CSS with thymeleaf-->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
-	<!-- Custom styles for this template with thymeleaf-->
-	<link th:href="@{/css/heroic-features.css}" rel="stylesheet">
+    <!-- Custom styles for this template with thymeleaf-->
+    <link th:href="@{/css/heroic-features.css}" rel="stylesheet">
 
 </head>
 
 <body>
 
-	<!-- Navigation with thymeleaf-->
-	<div th:include="usuario/template_usuario.html::header"></div>
+<!-- Navigation with thymeleaf-->
+<div th:include="/usuario/template_usuario.html::header-user"></div>
 
-	<!-- Page Content -->
-	<div class="container">
+<!-- Page Content -->
+<div class="container">
 
 
-		<!-- Page Heading/Breadcrumbs -->
-		<h1 class="mt-4 mb-3">
-			EShop <small>Revisar pedido</small>
-		</h1>
+    <!-- Page Heading/Breadcrumbs -->
+    <h1 class="mt-4 mb-3">
+        EShop <small>Revisar pedido</small>
+    </h1>
 
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-			<li class="breadcrumb-item active">Orden</li>
-		</ol>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+        <li class="breadcrumb-item active">Orden</li>
+    </ol>
 
-		<!-- Blog Post -->
-		<div class="card mb-4">
-			<div class="card-body">
-				<div class="row">
-					<div class="col-lg-9">
-						<div class="card-body">
-							<h5 class="card-title font-weight-bold">
-								REVISA TUS DATOS DE CONTACTO
-							</h5>
-							<h6 class="text-dark" th:text=" 'Nombre: ' + ${usuario.nombre}">Nombre: </h6>
-							<h6 class="text-dark" th:text=" 'Recibirás un email de confirmación a ' + ${usuario.email}">
-							</h6>
-							<h6 class="text-dark"
-								th:text=" 'La mensajería enviará tu paquete a la dirección ' + ${usuario.direccion}">
-							</h6>
+    <!-- Blog Post -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="card-body">
+                        <h5 class="card-title font-weight-bold">
+                            REVISA TUS DATOS DE CONTACTO
+                        </h5>
+                        <h6 class="text-dark" th:text=" 'Nombre: ' + ${usuario.nombre}">Nombre: </h6>
+                        <h6 class="text-dark" th:text=" 'Recibirás un email de confirmación a ' + ${usuario.email}">
+                        </h6>
+                        <h6 class="text-dark"
+                            th:text=" 'La mensajería enviará tu paquete a la dirección ' + ${usuario.direccion}">
+                        </h6>
 
-							<h5 class="card-title font-weight-bold mt-3">
-								HAS ENCARGADO LOS SIGUIENTE PRODUCTOS
-							</h5>
-							<div class="alert alert-light" role="alert">
-								<table class="table">
-									<thead>
-										<tr>
-											<th scope="col">Producto</th>
-											<th scope="col">Precio</th>
-											<th scope="col">Unidades</th>
-											<th scope="col">Total</th>
-										</tr>
-									</thead>
-									<tbody>
+                        <h5 class="card-title font-weight-bold mt-3">
+                            HAS ENCARGADO LOS SIGUIENTE PRODUCTOS
+                        </h5>
+                        <div class="alert alert-light" role="alert">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Producto</th>
+                                    <th scope="col">Precio</th>
+                                    <th scope="col">Unidades</th>
+                                    <th scope="col">Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
 
-										<tr th:each="detalle:${detalles}">
-											<td th:text="${detalle.nombre}"></td>
-											<td th:text="${detalle.precio} + ' €'"></td>
-											<td th:text="${detalle.cantidad}"></td>
-											<td th:text="${detalle.total} + ' €'"></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
+                                <tr th:each="detalle:${detalles}">
+                                    <td th:text="${detalle.nombre}"></td>
+                                    <td th:text="${detalle.precio} + ' €'"></td>
+                                    <td th:text="${detalle.cantidad}"></td>
+                                    <td th:text="${detalle.total} + ' €'"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-						</div>
-					</div>
+                    </div>
+                </div>
 
-					<div class="col-lg-3">
-						<h2 class="card-title">Resumen Orden</h2>
+                <div class="col-lg-3">
+                    <h2 class="card-title">Resumen Orden</h2>
 
-						<ul class="list-group">
-							<li class="list-group-item">
-								<h5 th:text=" 'Total: '+ ${orden.total}"></h5>
-							</li>
-							<a th:href="@{/guardarorden}" class="btn btn-dark">Realizar pedido</a>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- /.container -->
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <h5 th:text=" 'Total: '+ ${orden.total}"></h5>
+                        </li>
+                        <a th:href="@{/guardarorden}" class="btn btn-dark">Realizar pedido</a>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container -->
 
-	<!-- Footer with thymeleaf-->
-	<div th:include="usuario/template_usuario.html::footer">
-	</div>
+<!-- Footer with thymeleaf-->
+<div th:include="usuario/template_usuario.html::footer">
+</div>
 
-	<!-- Bootstrap core JavaScript and thymeleaf-->
-	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
-	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- Bootstrap core JavaScript and thymeleaf-->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
 </body>
 

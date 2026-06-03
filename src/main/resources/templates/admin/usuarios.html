@@ -22,7 +22,7 @@
 <body>
 
 	<!-- Navigation with thymeleaf-->
-	<div th:include="administrador/template_admin.html::header"></div>
+	<div th:include="/admin/template_admin.html::header"></div>
 
 	<!-- Page Content -->
 	<div class="container">
@@ -34,7 +34,7 @@
 		</h1>
 
 		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+			<li class="breadcrumb-item"><a th:href="@{/admin}">Home</a></li>
 			<li class="breadcrumb-item active">Ver Usuarios</li>
 		</ol>
 		<h2>Usuarios</h2>
@@ -59,7 +59,7 @@
 	<!-- /.container -->
 
 	<!-- Footer with thymeleaf template-->
-	<div th:include="administrador/template_admin.html::footer"></div>
+	<div th:include="/admin/template_admin.html::footer"></div>
 
 	<!-- Bootstrap core JavaScript tmf-->
 	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>

@@ -1,98 +1,94 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="">
-	<meta name="author" content="">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-	<title>EShop</title>
+    <title>EShop</title>
 
-	<!-- Bootstrap core CSS with thymeleaf-->
-	<link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Bootstrap core CSS with thymeleaf-->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
-	<!-- Custom styles for this template with thymeleaf-->
-	<link th:href="@{/css/heroic-features.css}" rel="stylesheet">
+    <!-- Custom styles for this template with thymeleaf-->
+    <link th:href="@{/css/heroic-features.css}" rel="stylesheet">
 
 </head>
 
 <body>
 
-	<!-- Navigation with thymeleaf-->
-	<div th:include="usuario/template_usuario.html::header" th:if="${sesion==null}">
-	</div>
 
-	<!-- Navigation with thymeleaf if user is logged -->
-	<div th:include="usuario/template_usuario.html::header-user" th:unless="${sesion==null}">
-	</div>
+<!-- Navigation with thymeleaf if user is logged -->
+<div th:include="/usuario/template_usuario.html::header-user"></div>
 
-	<!-- Page Content -->
-	<div class="container">
+<!-- Page Content -->
+<div class="container">
 
-		<!-- Page Heading/Breadcrumbs -->
-		<h1 class="mt-4 mb-3">
-			EShop<small> Cesta</small>
-		</h1>
+    <!-- Page Heading/Breadcrumbs -->
+    <h1 class="mt-4 mb-3">
+        EShop<small> Cesta</small>
+    </h1>
 
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-			<li class="breadcrumb-item active">Cesta</li>
-		</ol>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+        <li class="breadcrumb-item active">Cesta</li>
+    </ol>
 
-		<!-- Blog Post -->
-		<div class="card mb-4">
-			<div class="card-body">
-				<div class="row">
-					<div class="col-lg-9">
-						<table class="table">
-							<thead>
-								<tr>
-									<th scope="col">Producto</th>
-									<th scope="col">Precio</th>
-									<th scope="col">Unidades</th>
-									<th scope="col">Total</th>
-									<th scope="col"></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="orden:${shopdetails}">
-									<td th:text="${orden.nombre}"></td>
-									<td th:text="${orden.precio} +' €'"></td>
-									<td th:text="${orden.cantidad}"></td>
-									<td th:text="${orden.total} +' €'"></td>
-									<td><a th:href="@{/delete/cesta/{id} (id=${orden.producto.id})}"
-											class="btn btn-danger">Eliminar</a></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+    <!-- Blog Post -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-9">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Unidades</th>
+                            <th scope="col">Total</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="orden:${shopdetails}">
+                            <td th:text="${orden.nombre}"></td>
+                            <td th:text="${orden.precio} +' €'"></td>
+                            <td th:text="${orden.cantidad}"></td>
+                            <td th:text="${orden.total} +' €'"></td>
+                            <td><a th:href="@{/delete/cesta/{id} (id=${orden.producto.id})}"
+                                   class="btn btn-danger">Eliminar</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-					<div class="col-lg-3">
-						<h2 class="card-title">SUBTOTAL</h2>
+                <div class="col-lg-3">
+                    <h2 class="card-title">SUBTOTAL</h2>
 
-						<ul class="list-group bg-sucess">
-							<li class="list-group-item border-info">
-								<h5 class="text-info font-weight-bold" th:text="${orden.total} +' €'"></h5>
-							</li>
-							<a th:href="@{/verorden}" class="btn btn-info mt-2">Revisar pedido</a>
-						</ul>
-					</div>
+                    <ul class="list-group bg-sucess">
+                        <li class="list-group-item border-info">
+                            <h5 class="text-info font-weight-bold" th:text="${orden.total} +' €'"></h5>
+                        </li>
+                        <a th:href="@{/verorden}" class="btn btn-info mt-2">Revisar pedido</a>
+                    </ul>
+                </div>
 
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- /.container -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container -->
 
-	<!-- Footer with thymeleaf-->
-	<div th:include="usuario/template_usuario.html::footer">
-	</div>
+<!-- Footer with thymeleaf-->
+<div th:include="/usuario/template_usuario.html::footer">
+</div>
 
-	<!-- Bootstrap core JavaScript and thymeleaf-->
-	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
-	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- Bootstrap core JavaScript and thymeleaf-->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </body>
 
 </html>
