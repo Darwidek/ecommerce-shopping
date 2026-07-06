@@ -79,7 +79,9 @@ public class CustomUserDetails implements UserDetails {
     public String getDisplayName() {
         return usuario.getUsername();
     }
-
+    public String getEmail() {
+        return usuario.getEmail();
+    }
 
     @Override
     public boolean isAccountNonExpired() {

@@ -1,11 +1,6 @@
 package com.spring.ecommerce.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "detalles")
@@ -19,10 +14,15 @@ public class DetalleOrden {
 	private double total;
 
 	@ManyToOne
-	private Orden orden; // there are many details to one order
+	@JoinColumn(name = "orden_id", nullable = true)
+	private Orden orden;
 
 	@ManyToOne
 	private Producto producto; // there is a detail to many products
+
+	@ManyToOne
+	@JoinColumn(name = "usuario_id")
+	private Usuario usuario;
 
 	public DetalleOrden() { // empty constructor required by Hibernate JPA
 		// TODO Auto-generated constructor stub
@@ -91,6 +91,14 @@ public class DetalleOrden {
 
 	public void setProducto(Producto producto) {
 		this.producto = producto;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	@Override

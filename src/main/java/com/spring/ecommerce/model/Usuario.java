@@ -26,6 +26,9 @@ public class Usuario {
 	@OneToMany(mappedBy = "usuario")
 	private List<Orden> ordenes; // one user to many orders (foreign key user in orders table)
 
+	@OneToMany(mappedBy = "usuario")
+	private List<DetalleOrden> detalles;
+
 	public Usuario() {
 	} // empty constructor required by Hibernate JPA
 
@@ -112,6 +115,22 @@ public class Usuario {
 
 	public void setProductos(List<Producto> productos) {
 		this.productos = productos;
+	}
+
+	public List<DetalleOrden> getDetalles() {
+		return detalles;
+	}
+
+	public void setDetalles(List<DetalleOrden> detalles) {
+		this.detalles = detalles;
+	}
+
+	public List<Orden> getOrdenes() {
+		return ordenes;
+	}
+
+	public void setOrdenes(List<Orden> ordenes) {
+		this.ordenes = ordenes;
 	}
 
 	@Override

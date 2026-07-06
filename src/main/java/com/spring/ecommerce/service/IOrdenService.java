@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.spring.ecommerce.model.Orden;
 import com.spring.ecommerce.model.Usuario;
+import jakarta.transaction.Transactional;
 
 /**
  * Service contract for managing orders.
@@ -23,6 +24,9 @@ public interface IOrdenService {
 	 * @return list of all orders
 	 */
 	List<Orden> findAll();
+
+	@Transactional
+	void guardarCompra(Usuario usuario);
 
 	/**
 	 * Persists an order in the database.

@@ -1,4 +1,4 @@
- package com.spring.ecommerce.controller;
+package com.spring.ecommerce.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,167 +28,198 @@ import com.spring.ecommerce.service.IOrdenService;
 import com.spring.ecommerce.service.IUsuarioService;
 import com.spring.ecommerce.service.ProductoService;
 
- /**
-  * Main controller for the public shop.
-  *
-  * Handles product browsing, shopping cart, order creation
-  * and checkout process.
-  */
+/**
+ * Main controller for the public shop.
+ * <p>
+ * Handles product browsing, shopping cart, order creation
+ * and checkout process.
+ */
 @Controller
 @RequestMapping("/") // url: http://localhost:8080/
 public class HomeController {
 
-	private final Logger log = LoggerFactory.getLogger(HomeController.class);
+    private final Logger log = LoggerFactory.getLogger(HomeController.class);
 
-	@Autowired
-	private ProductoService productoService;
 
-	@Autowired
-	private IUsuarioService usuarioService;
+    @Autowired
+    private ProductoService productoService;
 
-	@Autowired
-	private IOrdenService ordenService;
+    @Autowired
+    private IUsuarioService usuarioService;
 
-	@Autowired
-	private IDetalleOrdenService detalleOrdenService;
+    @Autowired
+    private IOrdenService ordenService;
 
-	 // Temporary in-memory cart (session-like behavior)
-	List<DetalleOrden> detalles = new ArrayList<DetalleOrden>();
+    @Autowired
+    private IDetalleOrdenService detalleOrdenService;
 
-	Orden orden = new Orden(); // to save order an data about it
+    // Temporary in-memory cart (session-like behavior)
+    List<DetalleOrden> detalles = new ArrayList<DetalleOrden>();
 
-	 /**
-	  * Home page with product listing.
-	  */
-	@GetMapping("/") /// to show default view http://localhost:8080/
-	public String home(Model model) {
-		List<Producto> productos = productoService.findAll();
-		model.addAttribute("productos", productos);
-		// model.addAttribute("username", user.getNickname());
+    Orden orden = new Orden(); // to save order an data about it
 
-		return "usuario/home";
-	}
+    /**
+     * Home page with product listing.
+     */
+    @GetMapping("/")
+    /// to show default view http://localhost:8080/
+    public String home(Model model) {
+        List<Producto> productos = productoService.findAll();
+        model.addAttribute("productos", productos);
+        // model.addAttribute("username", user.getNickname());
 
-	 /**
-	  * Product detail page.
-	  */
-	@GetMapping("productohome/{id}")
-	public String productoHome(@PathVariable Integer id, Model model) {
-		log.info("Id producto enviado como parametro {}", id);
-		Producto producto = new Producto();
-		Optional<Producto> productoOpcional = productoService.get(id);
-		producto = productoOpcional.get();
-		model.addAttribute("producto", producto);
-		return "usuario/productohome";
-	}
+        return "usuario/home";
+    }
 
-	 /**
-	  * Adds a product to the shopping cart.
-	  */
-	@PostMapping("/cesta")
-	public String añadirCarito(@RequestParam Integer id, @RequestParam Integer cantidad, Model model) { // @requestparam
-																										// refrences to
-																										// post
-																										// parametres
-		DetalleOrden detalleOrden = new DetalleOrden();
-		Producto producto = new Producto();
-		double sumaTotal = 0;
+    /**
+     * Product detail page.
+     */
+    @GetMapping("productohome/{id}")
+    public String productoHome(@PathVariable Integer id, Model model) {
+        log.info("Id producto enviado como parametro {}", id);
+        Producto producto = new Producto();
+        Optional<Producto> productoOpcional = productoService.get(id);
+        producto = productoOpcional.get();
+        model.addAttribute("producto", producto);
+        return "usuario/productohome";
+    }
 
-		Optional<Producto> productoOpcional = productoService.get(id); // get the product by id or optional null
-		log.info("Producto añadido: {}", productoOpcional.get()); // return the producto object or exception if no exist
-		log.info("Cantidad {}", cantidad);
-		producto = productoOpcional.get(); // getter default to verify if product exist and generates it
-											// A VER QUE PASA
+    /**
+     * Adds a product to the shopping cart.
+     */
+    @PostMapping("/cesta")
+    public String añadirCarito(@RequestParam Integer id, @RequestParam Integer cantidad, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		detalleOrden.setCantidad(cantidad); // set atributes to detalle orden
-		detalleOrden.setPrecio(producto.getPrecio());
-		detalleOrden.setNombre(producto.getNombre());
-		detalleOrden.setTotal(producto.getPrecio() * cantidad);
-		detalleOrden.setProducto(producto);
+        Producto producto = productoService.get(id).get();
+        DetalleOrden detalleOrden = new DetalleOrden();
+        Usuario usuarioComprador = userDetails.getUsuario();
+        DetalleOrden detalle = new DetalleOrden();
 
-		// validate to not repeat detail with same product
-		Integer idProducto = producto.getId();
-		boolean ingresado = detalles.stream().anyMatch(p -> p.getProducto().getId() == idProducto); // verify the same
-																									// atributte in a
-																									// object list
-		if (!ingresado) { // if not the same add detalle to list
 
-			detalles.add(detalleOrden);
-		}
+        detalleOrden.setCantidad(cantidad); // set atributes to detalle orden
+        detalleOrden.setPrecio(producto.getPrecio());
+        detalleOrden.setNombre(producto.getNombre());
+        detalleOrden.setTotal(producto.getPrecio() * cantidad);
+        detalleOrden.setProducto(producto);
+        detalleOrden.setUsuario(usuarioComprador);
+        detalleOrden.setOrden(null);
 
-		sumaTotal = detalles.stream().mapToDouble(dt -> dt.getTotal()).sum(); // iINVESTIGATE LINE. Count an add a
-																				// determinated atribute of list sheet
-																				// details
-		orden.setTotal(sumaTotal); //
-		model.addAttribute("shopdetails", detalles);
-		model.addAttribute("orden", orden);
+        detalleOrdenService.save(detalleOrden);
 
-		return "/usuario/cesta";
-	}
+        List<DetalleOrden> detalles =
+                detalleOrdenService.obtenerCestaUsuario(usuarioComprador);
 
-	 /**
-	  * Removes a product from the shopping cart.
-	  */
-	@GetMapping("delete/cesta/{id}")
-	public String borrarProductoCesta(@PathVariable Integer id, Model model) {
-		List<DetalleOrden> ordenesNueva = new ArrayList<DetalleOrden>();
+        double total = detalles.stream()
+                .mapToDouble(DetalleOrden::getTotal)
+                .sum();
 
-		for (DetalleOrden detalleOrden : detalles) {
-			if (detalleOrden.getProducto().getId() != id) {
-				ordenesNueva.add(detalleOrden);
-			}
-		}
-		detalles = ordenesNueva; // update cart
-		double sumaTotal = 0;
+        Orden orden = new Orden();
+        orden.setTotal(total);
 
-		sumaTotal = detalles.stream().mapToDouble(dt -> dt.getTotal()).sum(); // sum all total of all details list
+        model.addAttribute("details", detalles);
+        model.addAttribute("detail", orden);
 
-		orden.setTotal(sumaTotal); // set total in order to show in cart
-		model.addAttribute("shopdetails", detalles);
-		model.addAttribute("orden", orden);
+        return "usuario/cesta";
+    }
 
-		return "usuario/cesta";
-	}
+    /**
+     * Removes a product from the shopping cart.
+     */
+    @GetMapping("/delete/cesta/{id}")
+    public String borrarProductoCesta(@PathVariable Integer id,
+                                      @AuthenticationPrincipal CustomUserDetails userDetails,
+                                      Model model) {
 
-	 /**
-	  * Displays current cart.
-	  */
-	@GetMapping("/getCesta") // show data about order and details before confirm shop
-	public String getCesta(Model model) { // get the order and details if it must to return cart
+        Usuario usuario = userDetails.getUsuario();
 
-		model.addAttribute("shopdetails", detalles);
-		model.addAttribute("orden", orden); // get detail an order generated in cesta
-		return "/usuario/cesta";
-	}
+        Optional<DetalleOrden> detalle =
+                detalleOrdenService.obtenerPorIdYUsuario(id, usuario);
 
-	 /**
-	  * Order summary before checkout.
-	  */
-	@GetMapping("/verorden")
-	public String verOrden(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (detalle.isPresent()) {
+            detalleOrdenService.delete(detalle.get().getId());
+        }
 
-		Usuario usuario = userDetails.getUsuario(); //usuario de prueba temporal
+        List<DetalleOrden> detalles =
+                detalleOrdenService.obtenerCestaUsuario(usuario);
 
-		model.addAttribute("detalles", detalles);
-		model.addAttribute("orden", orden); // get detail an order generated in cesta
-		model.addAttribute("usuario", usuario);
-		return "usuario/resumenorden";
-	}
+        double total = detalles.stream()
+                .mapToDouble(DetalleOrden::getTotal)
+                .sum();
 
-	 /**
-	  * Finalizes and saves the order.
-	  */
-	@GetMapping("/guardarorden")
-	public String guardarOrden(@AuthenticationPrincipal CustomUserDetails userDetails) { // not use model because will not o show in view but contains
-														// values of
-		// veOrden() method
+        Orden orden = new Orden();
+        orden.setTotal(total);
+
+        model.addAttribute("details", detalles);
+        model.addAttribute("detail", orden);
+
+        return "usuario/cesta";
+    }
+
+    /**
+     * Displays current cart.
+     */
+    @GetMapping("/getCesta") // show data about order and details before confirm shop
+    public String getCesta(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) { // get the order and details if it must to return cart
+
+
+        Usuario usuarioComprador = userDetails.getUsuario();
+        List<DetalleOrden> detalles =
+                detalleOrdenService.obtenerCestaUsuario(usuarioComprador);
+
+        double total = detalles.stream()
+                .mapToDouble(DetalleOrden::getTotal)
+                .sum();
+
+        Orden orden = new Orden();
+        orden.setTotal(total);
+
+        model.addAttribute("details", detalles);
+        model.addAttribute("detail", orden);
+
+        return "usuario/cesta";
+    }
+
+    /**
+     * Order summary before checkout.
+     */
+    @GetMapping("/verorden")
+    public String verOrden(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Usuario usuarioComprador = userDetails.getUsuario();
+        List<DetalleOrden> detalles =
+                detalleOrdenService.obtenerCestaUsuario(usuarioComprador);
+        double total = detalles.stream()
+                .mapToDouble(DetalleOrden::getTotal)
+                .sum();
+
+        Orden orden = new Orden();
+        orden.setTotal(total);
+
+        model.addAttribute("details", detalles);
+        model.addAttribute("detail", orden); // get detail an order generated in cesta
+        model.addAttribute("usuario", usuarioComprador);
+        return "usuario/resumenorden";
+    }
+
+    /**
+     * Finalizes and saves the order.
+     */
+
+/*
+@GetMapping("/guardarorden")
+	public String guardarOrden(@AuthenticationPrincipal CustomUserDetails userDetails) {
 		Date fechaCreacion = new Date(); // set date
 		orden.setFechaCreacion(fechaCreacion);
-		orden.setNumero(ordenService.darCodigoOrden()); // set code
-		Usuario usuario = userDetails.getUsuario(); // set
+		orden.setNumero(ordenService.darCodigoOrden());
+		Usuario usuarioComprador = userDetails.getUsuario();
+		List<DetalleOrden> detalles =
+				detalleOrdenService.obtenerCestaUsuario(usuarioComprador);
+		double total = detalles.stream()
+				.mapToDouble(DetalleOrden::getTotal)
+				.sum();
 																															// Usuario
-		orden.setUsuario(usuario);
-		log.info("Ordenes guardada: {}", orden);
+		orden.setUsuario(usuarioComprador);
+		orden.setTotal(total);
 		ordenService.save(orden);
 
 		for (DetalleOrden dt : detalles) { // assign details generated in order
@@ -199,23 +230,32 @@ public class HomeController {
 		detalles.clear();
 		return "redirect:/"; // redirect to home
 	}
-	 /**
-	  * Product search by name.
-	  */
-	@PostMapping("/busqueda")
-	public String buscarProducto(@RequestParam String nombre, Model model) {
-		log.info("Nombre del producto:{}", nombre);
-		List<Producto> productos = new ArrayList<Producto>();
-		if (nombre != nombre.toLowerCase()) {
-			productos = productoService.findAll().stream().filter(p -> p.getNombre().contains(nombre))
-					.collect(Collectors.toList());
-		} else {
-			productos = productoService.findAll().stream().filter(p -> p.getNombre().toLowerCase().contains(nombre))
-					.collect(Collectors.toList());
-		}
+ */
+    @GetMapping("/guardarorden")
+    public String guardarOrden(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		model.addAttribute("productos", productos);
-		return "usuario/home";
-	}
+        ordenService.guardarCompra(userDetails.getUsuario());
+
+        return "redirect:/";
+    }
+
+    /**
+     * Product search by name.
+     */
+    @PostMapping("/busqueda")
+    public String buscarProducto(@RequestParam String nombre, Model model) {
+        log.info("Nombre del producto:{}", nombre);
+        List<Producto> productos = new ArrayList<Producto>();
+        if (nombre != nombre.toLowerCase()) {
+            productos = productoService.findAll().stream().filter(p -> p.getNombre().contains(nombre))
+                    .collect(Collectors.toList());
+        } else {
+            productos = productoService.findAll().stream().filter(p -> p.getNombre().toLowerCase().contains(nombre))
+                    .collect(Collectors.toList());
+        }
+
+        model.addAttribute("productos", productos);
+        return "usuario/home";
+    }
 
 }

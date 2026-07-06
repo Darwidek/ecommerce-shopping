@@ -1,15 +1,10 @@
 package com.spring.ecommerce.controller;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-import com.spring.ecommerce.model.Producto;
 import com.spring.ecommerce.security.CustomUserDetails;
 import com.spring.ecommerce.service.ProductoService;
-import org.apache.coyote.http11.Http11InputBuffer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,12 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.spring.ecommerce.model.Orden;
 import com.spring.ecommerce.model.Usuario;
-import com.spring.ecommerce.repository.IUsuarioRepository;
 import com.spring.ecommerce.service.IOrdenService;
 import com.spring.ecommerce.service.IUsuarioService;
 
-// import jakarta.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/usuario")
@@ -36,7 +28,6 @@ public class UsuarioController {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	private final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
 	@Autowired
 	private IUsuarioService usuarioService;
@@ -67,7 +58,6 @@ public class UsuarioController {
 	@GetMapping("/login")
 	public String login() {
 
-		logger.info("TIPO DE USUARIO:");
 		return "usuario/login";
 	}
 

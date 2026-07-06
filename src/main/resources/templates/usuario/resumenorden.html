@@ -47,15 +47,17 @@
                         <h5 class="card-title font-weight-bold">
                             REVISA TUS DATOS DE CONTACTO
                         </h5>
-                        <h6 class="text-dark" th:text=" 'Nombre: ' + ${usuario.nombre}">Nombre: </h6>
+                        <h6 class="text-dark" th:text=" 'Nombre: ' + ${usuario.nombre}"><span
+                                sec:authentication="principal.displayName"></span></h6>
                         <h6 class="text-dark" th:text=" 'Recibirás un email de confirmación a ' + ${usuario.email}">
+                            <span sec:authentication="principal.email"></span>
                         </h6>
                         <h6 class="text-dark"
                             th:text=" 'La mensajería enviará tu paquete a la dirección ' + ${usuario.direccion}">
                         </h6>
 
                         <h5 class="card-title font-weight-bold mt-3">
-                            HAS ENCARGADO LOS SIGUIENTE PRODUCTOS
+                            HAS ENCARGADO LOS SIGUIENTES PRODUCTOS
                         </h5>
                         <div class="alert alert-light" role="alert">
                             <table class="table">
@@ -69,11 +71,11 @@
                                 </thead>
                                 <tbody>
 
-                                <tr th:each="detalle:${detalles}">
-                                    <td th:text="${detalle.nombre}"></td>
-                                    <td th:text="${detalle.precio} + ' €'"></td>
-                                    <td th:text="${detalle.cantidad}"></td>
-                                    <td th:text="${detalle.total} + ' €'"></td>
+                                <tr th:each="detail:${details}">
+                                    <td th:text="${detail.nombre}"></td>
+                                    <td th:text="${detail.precio} + ' €'"></td>
+                                    <td th:text="${detail.cantidad}"></td>
+                                    <td th:text="${detail.total} + ' €'"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -87,7 +89,7 @@
 
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <h5 th:text=" 'Total: '+ ${orden.total}"></h5>
+                            <h5 th:text=" 'Total: '+ ${detail.total}"></h5>
                         </li>
                         <a th:href="@{/guardarorden}" class="btn btn-dark">Realizar pedido</a>
                     </ul>
